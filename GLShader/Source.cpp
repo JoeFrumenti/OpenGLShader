@@ -6,11 +6,12 @@
 //vertex shader source code
 const GLchar* vertexShaderSource = "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n" //set aPos to the input, set vertices to be in position 0
-//"out vec4 vertexColor;\n"
+"layout (location = 1) in vec3 aColor;\n"
+"out vec3 ourColor;\n"
 "void main()\n"
 "{\n"
-" gl_Position = vec4(aPos.xyz, 1.0);\n" //the output of a vertex shader is gl_Position
-//"vertexColor = vec4(0.0, 1.0, 0.1, 1.0);\n"
+"gl_Position = vec4(aPos.xyz, 1.0);\n" //the output of a vertex shader is gl_Position
+"ourColor = aColor;\n"
 "}\0";
 
 GLuint vertexShader; //uint to store the sahder source code in
@@ -19,10 +20,10 @@ GLuint vertexShader; //uint to store the sahder source code in
 const GLchar* fragmentShaderSource = "#version 330 core\n"
 "out vec4 FragColor;\n"
 //"in vec4 vertexColor;\n"
-"uniform vec4 ourColor;\n"
+"in vec3 ourColor;\n"
 "void main()\n"
 "{\n"
-"\nFragColor = ourColor;\n"
+"\nFragColor = vec4(ourColor,0);\n"
 "}\0";
 GLuint fragmentShader;
 
@@ -32,9 +33,9 @@ GLuint VAO;
 
 
 //vertices to make a triangle hopefully
-float vertices[] = { -0.5f,  -0.5f, 0.0f,
-					  0.5f, -0.5f, 0.0f,
-					  0.0f,  0.5f, 0.0f
+float vertices[] = { -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+					  0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+					  0.0f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f
 };
 
 //Vertex buffer object
@@ -164,10 +165,12 @@ int main()
 
 	//tell opengl how to read the buffers
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 
 	//set attribute array to the 0 position
 	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
 
 	// unbind buffer (everything has been registered in Vertex Attribute Pointer)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
