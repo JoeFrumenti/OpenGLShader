@@ -6,6 +6,9 @@
 GLuint VAO;
 GLuint VBO;
 
+float horizontalOffset = 0.0f;
+float verticalOffset = 0.0f;
+
 
 //vertices to make a triangle hopefully
 float vertices[] = { -0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
@@ -27,6 +30,16 @@ void processInput(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
+	if (glfwGetKey(window, GLFW_KEY_LEFT))
+		horizontalOffset -= 0.01f;
+	if (glfwGetKey(window, GLFW_KEY_RIGHT))
+		horizontalOffset += 0.01f;
+	if (glfwGetKey(window, GLFW_KEY_UP))
+		verticalOffset += 0.01f;
+	if (glfwGetKey(window, GLFW_KEY_DOWN))
+		verticalOffset -= 0.01f;
+
+
 }
 
 int main()
@@ -71,7 +84,8 @@ int main()
 
 	
 	Shader ourShader("vertexshader.vs", "fragmentshader.fs");
-	std::string offval = "offsetvalue";
+	std::string offvalx = "offsetValueX";
+	std::string offvaly = "offsetValueY";
 
 
 	//set up Vertex Array Object
@@ -100,7 +114,6 @@ int main()
 
 
 	ourShader.use();
-	ourShader.setFloat(offval, 0.5f);
 
 	//RENDER LOOP
 	while (!glfwWindowShouldClose(window))
@@ -109,6 +122,8 @@ int main()
 		processInput(window);
 
 		//rendering commands
+		ourShader.setFloat(offvalx, horizontalOffset);
+		ourShader.setFloat(offvaly, verticalOffset);
 
 		//background color
 		glClearColor(.27f, 0.38f, 0.92f, 1.0f); //set glclearcolor
